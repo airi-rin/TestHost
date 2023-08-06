@@ -1,2 +1,16 @@
-package com.example.demo.controller;public class TestController {
+package com.example.demo.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/test")
+public class TestController {
+
+    @GetMapping("/user")
+    public ResponseEntity testUser() {
+        return ResponseEntity.ok("Role user");
+    }
 }

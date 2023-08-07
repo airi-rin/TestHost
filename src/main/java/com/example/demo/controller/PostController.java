@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.PostEntity;
+import com.example.demo.request.CreatePostRequest;
 import com.example.demo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity createPost(@RequestBody PostEntity postEntity) {
-        return ResponseEntity.ok(postService.createPost(postEntity));
+    public ResponseEntity createPost(@RequestBody CreatePostRequest createPostRequest) {
+        return ResponseEntity.ok(postService.createPost(createPostRequest));
     }
 }

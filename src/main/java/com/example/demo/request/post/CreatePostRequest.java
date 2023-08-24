@@ -1,4 +1,4 @@
-package com.example.demo.request;
+package com.example.demo.request.post;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.Data;
 public class CreatePostRequest {
 
     @NotBlank(message = "Title is not blank")
-    private String title;
+    private String postTitle;
 
     @NotBlank(message = "Content is not blank")
-    private String content;
+    private String postContent;
 }

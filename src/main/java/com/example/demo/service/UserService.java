@@ -2,7 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.RoleEntity;
 import com.example.demo.entity.UserEntity;
-import com.example.demo.request.CreateUserRequest;
+import com.example.demo.request.user.CreateUserRequest;
+import com.example.demo.response.user.UserResponse;
 import com.example.demo.respository.RoleRepository;
 import com.example.demo.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -35,7 +38,8 @@ public class UserService implements UserDetailsService {
         return userDetailsPrincipal;
     }
 
-    public UserEntity addUser(CreateUserRequest createUserRequest) {
+    @Transactional
+    public UserResponse addUser(CreateUserRequest createUserRequest) {
         UserEntity user = new UserEntity();
         user.setUsername(createUserRequest.getUsername());
         user.setPassword(new BCryptPasswordEncoder().encode(createUserRequest.getPassword()));
@@ -43,10 +47,15 @@ public class UserService implements UserDetailsService {
         user.setGender(createUserRequest.getGender());
         RoleEntity role = roleRepository.findByRoleName(createUserRequest.getRole());
         user.setRole(role);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return UserResponse.init(user);
     }
 
     public List<UserEntity> getAllUser() {
-        return userRepository.findAll();
+        List<UserEntity> userEntityList = userRepository.findAll();
+        List<UserResponse> userResponseList = userEntityList.stream()
+                .map(UserResponse::init)
+                .collect(Collectors.toList());
+        return  userEntityList;
     }
 }

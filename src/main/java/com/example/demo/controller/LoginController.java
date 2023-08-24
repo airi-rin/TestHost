@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.request.LoginRequest;
+import com.example.demo.request.user.LoginRequest;
 import com.example.demo.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

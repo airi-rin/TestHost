@@ -2,8 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.UserEntity;
 import com.example.demo.jwt.JwtTokenProvider;
-import com.example.demo.request.LoginRequest;
-import com.example.demo.response.LoginResponse;
+import com.example.demo.request.user.LoginRequest;
+import com.example.demo.response.user.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

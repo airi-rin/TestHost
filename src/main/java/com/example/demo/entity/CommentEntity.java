@@ -14,30 +14,35 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "post")
 @EntityListeners(AuditingEntityListener.class)
-public class PostEntity {
+@Table(name = "comment")
+public class CommentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
-    private Long postId;
+    @Column(name = "comment_id")
+    private Long commentId;
 
-    @Column(name = "post_title", nullable = false)
-    private String postTitle;
-
-    @Column(name = "post_content", nullable = false)
-    private String postContent;
+    @Column(name = "content", nullable = false)
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "post")
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private PostEntity post;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private CommentEntity parentComment;
+
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<CommentEntity> commentEntities;
+    List<CommentEntity> commentEntities;
 
     @Column(name = "create_at", nullable = false)
     @CreatedDate
@@ -46,5 +51,4 @@ public class PostEntity {
     @Column(name = "update_at", nullable = false)
     @LastModifiedDate
     private Date updateAt;
-
 }

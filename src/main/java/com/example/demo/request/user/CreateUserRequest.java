@@ -1,4 +1,4 @@
-package com.example.demo.request;
+package com.example.demo.request.user;
 
 import com.example.demo.entity.EGender;
 import com.example.demo.entity.ERole;

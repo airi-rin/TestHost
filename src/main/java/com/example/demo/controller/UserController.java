@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.request.CreateUserRequest;
+import com.example.demo.request.user.CreateUserRequest;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 

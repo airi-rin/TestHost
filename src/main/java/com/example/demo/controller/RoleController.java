@@ -4,14 +4,16 @@ import com.example.demo.entity.RoleEntity;
 import com.example.demo.respository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/role")
+@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @GetMapping
     public ResponseEntity getAllRole() {
@@ -20,7 +22,7 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity addRole(@RequestBody RoleEntity role) {
-        RoleEntity exRole = roleRepository.findByName(role.getName());
+        RoleEntity exRole = roleRepository.findByRoleName(role.getRoleName());
         if(exRole == null)
             return ResponseEntity.ok(roleRepository.save(role));
         return ResponseEntity.ok(exRole);

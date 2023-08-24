@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.PostEntity;
-import com.example.demo.entity.UserEntity;
 import com.example.demo.request.CreatePostRequest;
 import com.example.demo.respository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,10 @@ import java.util.List;
 @Service
 public class PostService {
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    AuthService authService;
+    private AuthService authService;
 
     public List<PostEntity> getAllPost (){
         return postRepository.findAll();
@@ -26,8 +25,6 @@ public class PostService {
 
         postEntity.setTitle(createPostRequest.getTitle());
         postEntity.setContent(createPostRequest.getContent());
-        //postEntity.setCreateAt(createPostRequest.getCreateAt());
-        //postEntity.setUpdateAt(createPostRequest.getCreateAt());
         postEntity.setUser(authService.getUser());
         return postRepository.save(postEntity);
     }

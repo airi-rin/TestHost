@@ -1,39 +1,55 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-//import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Date;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id")
+    private Long id;
 
-    //@NotBlank(message = "username {validator}")
-    //@CapitalizedConstraint
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    //@NotBlank(message = "password {validator.NotBlank.message}")
-    //@Min(value = 5, message = "Password >= 5 character")
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "gender", nullable = false)
     private EGender gender;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<PostEntity> postEntities;
+
+    @Column(name = "create_at", columnDefinition = "date", nullable = false)
+    @CreatedDate
+    private Date createAt;
+
+    @Column(name = "update_at", columnDefinition = "date", nullable = false)
+    @LastModifiedDate
+    private Date updateAt;
 }

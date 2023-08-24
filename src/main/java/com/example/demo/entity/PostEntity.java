@@ -3,13 +3,11 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -22,21 +20,22 @@ public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "post_id")
+    private Long postId;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "create_at", nullable = false)
     @CreatedDate
-    private LocalDateTime createAt;
+    private Date createAt;
 
     @Column(name = "update_at", nullable = false)
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private Date updateAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

@@ -1,9 +1,10 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -13,11 +14,17 @@ import lombok.NoArgsConstructor;
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "role_id")
+    private Long roleId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    //@NotBlank(message = "role name not blank")
-    private ERole name;
+    @Column(name = "role_name", nullable = false)
+    private ERole roleName;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    Set<UserEntity> userEntities;
 
 }

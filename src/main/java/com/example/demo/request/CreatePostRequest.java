@@ -1,15 +1,14 @@
 package com.example.demo.request;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class CreatePostRequest {
+
+    @NotBlank(message = "Title is not blank")
     private String title;
 
+    @NotBlank(message = "Content is not blank")
     private String content;
-
-    //private Date createAt;
 }

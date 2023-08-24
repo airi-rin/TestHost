@@ -17,10 +17,10 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder().encode(createUserRequest.getPassword()));
         user.setEmail(createUserRequest.getEmail());
         user.setGender(createUserRequest.getGender());
-        RoleEntity role = roleRepository.findByName(createUserRequest.getRole());
+        RoleEntity role = roleRepository.findByRoleName(createUserRequest.getRole());
         user.setRole(role);
         return userRepository.save(user);
     }

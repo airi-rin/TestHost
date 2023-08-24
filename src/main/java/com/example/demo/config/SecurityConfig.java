@@ -6,7 +6,6 @@ import com.example.demo.util.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -40,17 +39,6 @@ public class SecurityConfig {
         return http.csrf((csrf) -> csrf
                         .ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests((requests) -> requests
-                                .requestMatchers(HttpMethod.GET,"/test/admin").hasRole("ADMIN")
-                                .requestMatchers("/test/guest").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/test/user").hasRole("USER")
-                        .requestMatchers("/role").hasRole("ADMIN")
-                        .requestMatchers("/user").hasRole("ADMIN")
-                        .requestMatchers("/login").permitAll()
-                        //.requestMatchers("/swagger-ui").permitAll()
-                        .requestMatchers("/").permitAll()
-                )
-                .authorizeHttpRequests((requests) -> requests
-                                .requestMatchers("/post").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

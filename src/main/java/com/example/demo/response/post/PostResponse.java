@@ -1,7 +1,7 @@
 package com.example.demo.response.post;
 
 import com.example.demo.entity.PostEntity;
-import com.example.demo.response.user.UserSimpleResponse;
+import com.example.demo.response.person.PersonSimpleResponse;
 import lombok.Data;
 
 import java.util.Date;
@@ -21,7 +21,7 @@ public class PostResponse {
 
     private Date updateAt;
 
-    private UserSimpleResponse user;
+    private PersonSimpleResponse person;
 
     public static PostResponse init(PostEntity entity) {
         PostResponse response = new PostResponse();
@@ -31,7 +31,7 @@ public class PostResponse {
         response.setCommentNumber(entity.getCommentEntities().size());
         response.setCreateAt(entity.getCreateAt());
         response.setUpdateAt(entity.getUpdateAt());
-        response.setUser(UserSimpleResponse.init(entity.getUser()));
+        response.setPerson(PersonSimpleResponse.init(entity.getPerson()));
         return response;
     }
 }

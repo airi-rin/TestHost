@@ -1,7 +1,7 @@
 package com.example.demo.response.comment;
 
 import com.example.demo.entity.CommentEntity;
-import com.example.demo.response.user.UserSimpleResponse;
+import com.example.demo.response.person.PersonSimpleResponse;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ public class CommentResponse {
 
     private String content;
 
-    private UserSimpleResponse user;
+    private PersonSimpleResponse person;
 
     private Integer commentNumber;
 
@@ -25,7 +25,7 @@ public class CommentResponse {
         CommentResponse response = new CommentResponse();
         response.setCommentId(entity.getCommentId());
         response.setContent(entity.getContent());
-        response.setUser(UserSimpleResponse.init(entity.getUser()));
+        response.setPerson(PersonSimpleResponse.init(entity.getPerson()));
         response.setCommentNumber(entity.getCommentEntities().size());
         response.setCreateAt(entity.getCreateAt());
         response.setUpdateAt(entity.getUpdateAt());

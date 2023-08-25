@@ -1,6 +1,6 @@
-package com.example.demo.service;
+package com.example.demo.auth;
 
-import com.example.demo.entity.UserEntity;
+import com.example.demo.auth.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

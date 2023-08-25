@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
-import com.example.demo.jwt.JwtAuthenticationFilter;
-import com.example.demo.service.UserService;
+import com.example.demo.auth.JwtAuthenticationFilter;
+import com.example.demo.auth.UserService;
 import com.example.demo.util.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

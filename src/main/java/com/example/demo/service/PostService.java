@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.auth.AuthService;
 import com.example.demo.entity.ERole;
 import com.example.demo.entity.PostEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.auth.UserEntity;
 import com.example.demo.request.post.CreatePostRequest;
 import com.example.demo.request.post.UpdatePostRequest;
+import com.example.demo.response.post.PostDetailResponse;
 import com.example.demo.response.post.PostResponse;
 import com.example.demo.respository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +39,19 @@ public class PostService {
 
         postEntity.setPostTitle(postRequest.getPostTitle());
         postEntity.setPostContent(postRequest.getPostContent());
-        postEntity.setUser(authService.getUser());
+        postEntity.setPerson(authService.getUser().getPerson());
 
         postRepository.save(postEntity);
         return "Create post sucess";
     }
 
-    public PostResponse readPost(Long postId) {
+    public PostDetailResponse readPost(Long postId) {
         PostEntity postEntity = getPostEntity(postId);
         if (!canReadPost(postEntity)) {
             throw new RuntimeException("Can not read this post");
         }
 
-        PostResponse postResponse = PostResponse.init(postEntity);
+        PostDetailResponse postResponse = PostDetailResponse.init(postEntity);
         return postResponse;
     }
 
@@ -89,7 +91,8 @@ public class PostService {
 
     private boolean canChangePost(PostEntity postEntity) {
         UserEntity userUpdate = authService.getUser();
-        if (userUpdate != postEntity.getUser() && userUpdate.getRole().getRoleName() != ERole.ADMIN) {
+        if (userUpdate.getId() != postEntity.getPerson().getUser().getId()
+                && userUpdate.getRole().getRoleName() != ERole.ADMIN) {
             return false;
         }
         return true;

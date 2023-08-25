@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.auth.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,19 +15,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "person")
 @EntityListeners(AuditingEntityListener.class)
-public class UserEntity {
+public class PersonEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "person_id")
+    private Long personId;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -35,17 +34,17 @@ public class UserEntity {
     @Column(name = "gender", nullable = false)
     private EGender gender;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private RoleEntity role;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PostEntity> postEntities;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

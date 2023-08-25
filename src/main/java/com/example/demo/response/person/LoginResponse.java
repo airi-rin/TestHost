@@ -1,4 +1,4 @@
-package com.example.demo.response.user;
+package com.example.demo.response.person;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.example.demo.request.user;
+package com.example.demo.request.person;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

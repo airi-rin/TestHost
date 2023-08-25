@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,8 +31,8 @@ public class PostEntity {
     private String postContent;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @JoinColumn(name = "person_id", nullable = false)
+    private PersonEntity person;
 
     @OneToMany(mappedBy = "post")
     @JsonIgnore

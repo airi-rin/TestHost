@@ -2,31 +2,39 @@ package com.example.demo.controller;
 
 import com.example.demo.request.comment.CreateCommentRequest;
 import com.example.demo.request.comment.UpdateCommentRequest;
+import com.example.demo.response.comment.CommentDetailResponse;
+import com.example.demo.response.comment.CommentResponse;
 import com.example.demo.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/comments")
+//@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
 public class CommentController {
 
     @Autowired
     CommentService commentService;
 
     @GetMapping
-    public ResponseEntity getAllComment() {
-        return ResponseEntity.ok(commentService.getAllComment());
+    public ResponseEntity<Page<CommentResponse>> getAllComment(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                               @RequestParam(name = "size", defaultValue = "10") int size) {
+        return commentService.getAllComment(page, size);
     }
 
     @PostMapping
-    public ResponseEntity createComment(@RequestBody CreateCommentRequest createCommentRequest) {
-        return ResponseEntity.ok(commentService.createComment(createCommentRequest));
+    public ResponseEntity<String> createComment(@RequestBody CreateCommentRequest createCommentRequest) {
+        return commentService.createComment(createCommentRequest);
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity readComment(@PathVariable(name = "commentId") Long readCommentId) {
-        return ResponseEntity.ok(commentService.readComment(readCommentId));
+    public ResponseEntity<CommentDetailResponse> readComment(@PathVariable(name = "commentId") Long readCommentId,
+                                                             @RequestParam(name = "page", defaultValue = "1") int page,
+                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
+        return commentService.readComment(readCommentId, page, size);
     }
 
     @PutMapping("/{commentId}")

@@ -2,6 +2,7 @@ package com.example.demo.response.comment;
 
 import com.example.demo.entity.CommentEntity;
 import lombok.Data;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,15 +12,20 @@ public class CommentDetailResponse {
 
     private CommentResponse comment;
 
-    private List<CommentResponse> commentList;
+    private Page<CommentResponse> commentPage;
 
-    public static CommentDetailResponse init(CommentEntity entity) {
+    public static CommentDetailResponse init(CommentEntity entity, int page, int size) {
         CommentDetailResponse response = new CommentDetailResponse();
         response.setComment(CommentResponse.init(entity));
-        List<CommentResponse> commentResponseList = entity.getCommentEntities().stream()
-                .map(CommentResponse::init)
-                .collect(Collectors.toList());
-        response.setCommentList(commentResponseList);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("commentId")));
+        Page<CommentResponse> commentResponsePage = new PageImpl<>(
+                entity.getCommentEntities().stream()
+                        .skip(page * size)
+                        .limit(size)
+                        .map(CommentResponse::init)
+                        .collect(Collectors.toList()),
+                pageable, entity.getCommentEntities().size());
+        response.setCommentPage(commentResponsePage);
         return response;
     }
 }

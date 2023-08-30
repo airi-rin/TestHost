@@ -9,6 +9,7 @@ import com.example.demo.response.person.PersonResponse;
 import com.example.demo.respository.PersonRepository;
 import com.example.demo.respository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class PersonService {
     private UserRepository userRepository;
 
     @Transactional
-    public PersonResponse addPerson(CreatePersonRequest createPersonRequest) {
+    public ResponseEntity<PersonResponse> addPerson(CreatePersonRequest createPersonRequest) {
         UserEntity user = new UserEntity();
         user.setUsername(createPersonRequest.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(createPersonRequest.getPassword()));
@@ -44,14 +45,14 @@ public class PersonService {
 
         userRepository.save(user);
 
-        return PersonResponse.init(person);
+        return ResponseEntity.ok(PersonResponse.init(person));
     }
 
-    public List<PersonEntity> getAllPerson() {
+    public ResponseEntity<List<PersonResponse>> getAllPerson() {
         List<PersonEntity> personEntityList = personRepository.findAll();
         List<PersonResponse> personResponseList = personEntityList.stream()
                 .map(PersonResponse::init)
                 .collect(Collectors.toList());
-        return personEntityList;
+        return ResponseEntity.ok(personResponseList);
     }
 }

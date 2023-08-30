@@ -10,6 +10,9 @@ import com.example.demo.response.post.PostDetailResponse;
 import com.example.demo.response.post.PostResponse;
 import com.example.demo.respository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +28,21 @@ public class PostService {
     @Autowired
     private AuthService authService;
 
-    public List<PostResponse> getAllPost (){
-        List<PostEntity> postEntityList = postRepository.findAll();
-        List<PostResponse> postResponseList = postEntityList.stream()
-                .map(PostResponse::init)
-                .collect(Collectors.toList());
-        return postResponseList;
+    public ResponseEntity<Page<PostResponse>> getAllPost (int page, int size){
+        page --;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("postId")));
+        Page<PostEntity> postEntityPage = postRepository.findAll(pageable);
+        Page<PostResponse> postResponsePage = new PageImpl<> (
+                postEntityPage.getContent().stream()
+                        .map(PostResponse::init)
+                        .collect(Collectors.toList()),
+                pageable, postEntityPage.getTotalElements());
+        ResponseEntity responseEntity = new ResponseEntity<>(postResponsePage, HttpStatus.OK);
+        return responseEntity;
     }
 
     @Transactional
-    public String createPost(CreatePostRequest postRequest) {
+    public ResponseEntity<String> createPost(CreatePostRequest postRequest) {
         PostEntity postEntity = new PostEntity();
 
         postEntity.setPostTitle(postRequest.getPostTitle());
@@ -42,21 +50,21 @@ public class PostService {
         postEntity.setPerson(authService.getUser().getPerson());
 
         postRepository.save(postEntity);
-        return "Create post sucess";
+        return ResponseEntity.ok("Create post sucess");
     }
 
-    public PostDetailResponse readPost(Long postId) {
+    public ResponseEntity<PostDetailResponse> readPost(Long postId, int page, int size) {
         PostEntity postEntity = getPostEntity(postId);
         if (!canReadPost(postEntity)) {
             throw new RuntimeException("Can not read this post");
         }
 
-        PostDetailResponse postResponse = PostDetailResponse.init(postEntity);
-        return postResponse;
+        PostDetailResponse postResponse = PostDetailResponse.init(postEntity, page - 1, size);
+        return ResponseEntity.ok(postResponse);
     }
 
     @Transactional
-    public String updatePost(Long postId, UpdatePostRequest postRequest) {
+    public ResponseEntity<String> updatePost(Long postId, UpdatePostRequest postRequest) {
         PostEntity postEntity = getPostEntity(postId);
         if (!canChangePost(postEntity)) {
             throw new RuntimeException("Can not update this post");
@@ -66,18 +74,18 @@ public class PostService {
         postEntity.setPostContent(postRequest.getPostContent());
 
         postRepository.save(postEntity);
-        return "Update post sucess";
+        return ResponseEntity.ok("Update post sucess");
     }
 
     @Transactional
-    public String deletePost(Long postId) {
+    public ResponseEntity<String> deletePost(Long postId) {
         PostEntity postEntity = getPostEntity(postId);
         if (canChangePost(postEntity)) {
             throw new RuntimeException("Can not delete this post");
         }
 
         postRepository.delete(postEntity);
-        return "Delete post sucess";
+        return ResponseEntity.ok("Delete post sucess");
     }
 
     public PostEntity getPostEntity(Long postId) {

@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.PersonEntity;
 import com.example.demo.request.person.CreatePersonRequest;
+import com.example.demo.response.person.PersonResponse;
 import com.example.demo.service.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/persons")
+@RequestMapping("/api/persons")
 @PreAuthorize("hasRole('ADMIN')")
 public class PersonController {
 
@@ -17,12 +21,12 @@ public class PersonController {
     private PersonService personService;
 
     @GetMapping
-    public ResponseEntity getAllPerson() {
-        return ResponseEntity.ok(personService.getAllPerson());
+    public ResponseEntity<List<PersonResponse>> getAllPerson() {
+        return personService.getAllPerson();
     }
 
     @PostMapping
-    public ResponseEntity addPerson(@RequestBody @Valid CreatePersonRequest createPersonRequest) {
-        return ResponseEntity.ok(personService.addPerson(createPersonRequest));
+    public ResponseEntity<PersonResponse> addPerson(@RequestBody @Valid CreatePersonRequest createPersonRequest) {
+        return personService.addPerson(createPersonRequest);
     }
 }

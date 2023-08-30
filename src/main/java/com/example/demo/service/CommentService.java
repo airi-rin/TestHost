@@ -11,6 +11,8 @@ import com.example.demo.response.comment.CommentDetailResponse;
 import com.example.demo.response.comment.CommentResponse;
 import com.example.demo.respository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +31,20 @@ public class CommentService {
     @Autowired
     PostService postService;
 
-    public List<CommentResponse> getAllComment() {
-        List<CommentEntity> commentEntityList = commentRepository.findAll();
-        List<CommentResponse> commentResponseList = commentEntityList.stream()
-                .map(CommentResponse::init)
-                .collect(Collectors.toList());
-        return commentResponseList;
+    public ResponseEntity<Page<CommentResponse>> getAllComment(int page, int size) {
+        page --;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("commentId")));
+        Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageable);
+        Page<CommentResponse> commentResponsePage = new PageImpl<>(
+                commentEntityPage.getContent().stream()
+                        .map(CommentResponse::init)
+                        .collect(Collectors.toList()),
+                pageable, commentEntityPage.getTotalElements());
+        return ResponseEntity.ok(commentResponsePage);
     }
 
     @Transactional
-    public String createComment(CreateCommentRequest commentRequest) {
+    public ResponseEntity<String> createComment(CreateCommentRequest commentRequest) {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setContent(commentRequest.getContent());
         commentEntity.setPerson(authService.getUser().getPerson());
@@ -56,19 +62,19 @@ public class CommentService {
         }
 
         commentRepository.save(commentEntity);
-        return "Create comment sucess";
+        return ResponseEntity.ok("Create comment sucess");
     }
 
-    public CommentDetailResponse readComment(Long commentId) {
+    public ResponseEntity<CommentDetailResponse> readComment(Long commentId, int page, int size) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if(!canReadComment(commentEntity)) {
             throw new RuntimeException("Can not read this comment");
         }
-        CommentDetailResponse commentDetailResponse = CommentDetailResponse.init(commentEntity);
-        return commentDetailResponse;
+        CommentDetailResponse commentDetailResponse = CommentDetailResponse.init(commentEntity, page - 1, size);
+        return ResponseEntity.ok(commentDetailResponse);
     }
 
-    public String updateComment(Long commentId, UpdateCommentRequest commentRequest) {
+    public ResponseEntity<String> updateComment(Long commentId, UpdateCommentRequest commentRequest) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if (!canChangeComment(commentEntity)) {
             throw new RuntimeException("Can not update this comment");
@@ -76,17 +82,17 @@ public class CommentService {
 
         commentEntity.setContent(commentRequest.getContent());
         commentRepository.save(commentEntity);
-        return "Update comment sucess";
+        return ResponseEntity.ok("Update comment sucess");
     }
 
-    public String deleteComment(Long commentId) {
+    public ResponseEntity<String> deleteComment(Long commentId) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if(!canChangeComment(commentEntity)) {
             throw new RuntimeException("Can not delete this comment");
         }
 
         commentRepository.delete(commentEntity);
-        return "Delete comment sucess";
+        return ResponseEntity.ok("Delete comment sucess");
     }
 
     public CommentEntity getCommentEntity(Long commentId) {

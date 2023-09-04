@@ -12,18 +12,18 @@ public class TestController {
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity testUser() {
+    public ResponseEntity<String> testUser() {
         return ResponseEntity.ok("Role User");
     }
 
     @GetMapping("/guest")
-    public ResponseEntity testGuest() {
+    public ResponseEntity<String> testGuest() {
         return ResponseEntity.ok("Role Guest");
     }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity testAdmin() {
+    public ResponseEntity<String> testAdmin() {
         return ResponseEntity.ok("Role Admin");
     }
 }

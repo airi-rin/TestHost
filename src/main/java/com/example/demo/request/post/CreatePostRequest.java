@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class CreatePostRequest {
 
-    @NotBlank(message = "Title is not blank")
+    @NotBlank(message = "Title {validate.notBlank}")
     private String postTitle;
 
-    @NotBlank(message = "Content is not blank")
+    @NotBlank(message = "Content {validate.notBlank}")
     private String postContent;
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping
-    public ResponseEntity getHome() {
-        return ResponseEntity.ok("Home version 6");
+    public ResponseEntity<String> getHome() {
+        return ResponseEntity.ok("Home version 7");
     }
 }

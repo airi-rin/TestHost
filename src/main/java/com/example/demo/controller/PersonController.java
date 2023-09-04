@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.PersonEntity;
+import com.example.demo.request.person.ChangePasswordRequest;
 import com.example.demo.request.person.CreatePersonRequest;
 import com.example.demo.response.person.PersonResponse;
 import com.example.demo.service.PersonService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/persons")
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 public class PersonController {
 
     @Autowired
@@ -28,5 +29,10 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<PersonResponse> addPerson(@RequestBody @Valid CreatePersonRequest createPersonRequest) {
         return personService.addPerson(createPersonRequest);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return personService.changePassword(changePasswordRequest);
     }
 }

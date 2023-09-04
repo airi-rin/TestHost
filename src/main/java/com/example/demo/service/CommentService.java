@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.auth.AuthService;
 import com.example.demo.auth.UserEntity;
+import com.example.demo.config.Message;
+import com.example.demo.constant.MessageConstant;
 import com.example.demo.entity.CommentEntity;
 import com.example.demo.entity.ERole;
 import com.example.demo.entity.PostEntity;
@@ -11,12 +13,14 @@ import com.example.demo.response.comment.CommentDetailResponse;
 import com.example.demo.response.comment.CommentResponse;
 import com.example.demo.respository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +57,7 @@ public class CommentService {
         } else {
             Optional<CommentEntity> parentEntityOptional = commentRepository.findById(commentRequest.getParentId());
             if (!parentEntityOptional.isPresent()) {
-                throw new IllegalArgumentException("Not exist comment parent");
+                throw new IllegalArgumentException(Message.getMessage(MessageConstant.NOT_EXIST, "comment parent"));
             }
             CommentEntity parentEntity = parentEntityOptional.get();
             commentEntity.setParentComment(parentEntity);
@@ -62,13 +66,13 @@ public class CommentService {
         }
 
         commentRepository.save(commentEntity);
-        return ResponseEntity.ok("Create comment sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_CREATE, "comment"));
     }
 
     public ResponseEntity<CommentDetailResponse> readComment(Long commentId, int page, int size) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if(!canReadComment(commentEntity)) {
-            throw new RuntimeException("Can not read this comment");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_READ, "comment"));
         }
         CommentDetailResponse commentDetailResponse = CommentDetailResponse.init(commentEntity, page - 1, size);
         return ResponseEntity.ok(commentDetailResponse);
@@ -77,28 +81,28 @@ public class CommentService {
     public ResponseEntity<String> updateComment(Long commentId, UpdateCommentRequest commentRequest) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if (!canChangeComment(commentEntity)) {
-            throw new RuntimeException("Can not update this comment");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_UPDATE, "comment"));
         }
 
         commentEntity.setContent(commentRequest.getContent());
         commentRepository.save(commentEntity);
-        return ResponseEntity.ok("Update comment sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_UPDATE, "comment"));
     }
 
     public ResponseEntity<String> deleteComment(Long commentId) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if(!canChangeComment(commentEntity)) {
-            throw new RuntimeException("Can not delete this comment");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_DELETE, "comment"));
         }
 
         commentRepository.delete(commentEntity);
-        return ResponseEntity.ok("Delete comment sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_DELETE, "comment"));
     }
 
     public CommentEntity getCommentEntity(Long commentId) {
         Optional<CommentEntity> commentEntityOptional = commentRepository.findById(commentId);
         if(!commentEntityOptional.isPresent()) {
-            throw new IllegalArgumentException("Not exist this comment");
+            throw new IllegalArgumentException(Message.getMessage(MessageConstant.NOT_EXIST, "comment"));
         }
         return commentEntityOptional.get();
     }

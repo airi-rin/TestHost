@@ -1,18 +1,19 @@
 package com.example.demo.request.comment;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class CreateCommentRequest {
 
-    @NotBlank(message = "Content is not blank")
+    @NotBlank(message = "Content {validate.notBlank}")
     private String content;
 
-    @NotBlank(message = "Parent is post ? is not blank")
+    @NotNull(message = "Parent is post ? {validate.notBlank}")
     private Boolean parentIsPost;
 
-    @NotBlank(message = "Parent id is not blank")
+    @NotNull(message = "Parent id {validate.notBlank}")
     private Long parentId;
 
 }

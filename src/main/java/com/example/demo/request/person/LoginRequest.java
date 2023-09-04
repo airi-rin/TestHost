@@ -8,9 +8,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @NotBlank(message = "User name is not blank")
+    @NotBlank(message = "User name {validate.notBlank}")
     private String username;
 
-    @NotBlank(message = "Password is not blank")
+    @NotBlank(message = "Password {validate.notBlank}")
     private String password;
 }

@@ -12,21 +12,21 @@ import lombok.Data;
 
 @Data
 public class CreatePersonRequest {
-    @NotBlank(message = "name {validator.NotBlank.message}")
+    @NotBlank(message = "name {validate.notBlank}")
     private String name;
 
     @Email
-    @NotBlank(message = "Email is not blank")
+    @NotBlank(message = "Email {validate.notBlank}")
     private String email;
 
-    @NotNull(message = "Gender is not blank")
+    @NotNull(message = "Gender {validate.notBlank}")
     @Enumerated(EnumType.STRING)
     private EGender gender;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "role is not blank")
+    @NotNull(message = "Role {validate.notBlank}")
     private ERole role;
 
-    @NotBlank(message = "password {validator.NotBlank.message}")
+    @NotBlank(message = "Password {validate.notBlank}")
     private String password;
 }

@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.auth.AuthService;
+import com.example.demo.config.Message;
+import com.example.demo.constant.MessageConstant;
 import com.example.demo.entity.ERole;
 import com.example.demo.entity.PostEntity;
 import com.example.demo.auth.UserEntity;
@@ -16,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,13 +51,13 @@ public class PostService {
         postEntity.setPerson(authService.getUser().getPerson());
 
         postRepository.save(postEntity);
-        return ResponseEntity.ok("Create post sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_CREATE, "post"));
     }
 
     public ResponseEntity<PostDetailResponse> readPost(Long postId, int page, int size) {
         PostEntity postEntity = getPostEntity(postId);
         if (!canReadPost(postEntity)) {
-            throw new RuntimeException("Can not read this post");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_READ, "post"));
         }
 
         PostDetailResponse postResponse = PostDetailResponse.init(postEntity, page - 1, size);
@@ -67,31 +68,31 @@ public class PostService {
     public ResponseEntity<String> updatePost(Long postId, UpdatePostRequest postRequest) {
         PostEntity postEntity = getPostEntity(postId);
         if (!canChangePost(postEntity)) {
-            throw new RuntimeException("Can not update this post");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_UPDATE, "post"));
         }
 
         postEntity.setPostTitle(postRequest.getPostTitle());
         postEntity.setPostContent(postRequest.getPostContent());
 
         postRepository.save(postEntity);
-        return ResponseEntity.ok("Update post sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_UPDATE, "post"));
     }
 
     @Transactional
     public ResponseEntity<String> deletePost(Long postId) {
         PostEntity postEntity = getPostEntity(postId);
         if (canChangePost(postEntity)) {
-            throw new RuntimeException("Can not delete this post");
+            throw new RuntimeException(Message.getMessage(MessageConstant.CAN_NOT_DELETE, "post"));
         }
 
         postRepository.delete(postEntity);
-        return ResponseEntity.ok("Delete post sucess");
+        return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_DELETE, "post"));
     }
 
     public PostEntity getPostEntity(Long postId) {
         Optional<PostEntity> postEntityOptional = postRepository.findById(postId);
         if (!postEntityOptional.isPresent()) {
-            throw new IllegalArgumentException("Not exist this post");
+            throw new IllegalArgumentException(Message.getMessage(MessageConstant.NOT_EXIST, "post"));
         }
 
         return postEntityOptional.get();

@@ -31,6 +31,7 @@ public class AuthService {
         String jwt = tokenProvider.generateToken((UserDetailsPrincipal) authentication.getPrincipal());
         return new LoginResponse(jwt);
     }
+
     public UserDetailsPrincipal getPrincipal() {
         return (UserDetailsPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

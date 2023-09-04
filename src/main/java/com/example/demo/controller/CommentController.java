@@ -5,6 +5,7 @@ import com.example.demo.request.comment.UpdateCommentRequest;
 import com.example.demo.response.comment.CommentDetailResponse;
 import com.example.demo.response.comment.CommentResponse;
 import com.example.demo.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createComment(@RequestBody CreateCommentRequest createCommentRequest) {
+    public ResponseEntity<String> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         return commentService.createComment(createCommentRequest);
     }
 
@@ -38,13 +39,13 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity updateComment(@PathVariable(name = "commentId") Long updateCommentId,
-                                        @RequestBody UpdateCommentRequest updateCommentRequest) {
-        return ResponseEntity.ok(commentService.updateComment(updateCommentId, updateCommentRequest));
+    public ResponseEntity<String> updateComment(@PathVariable(name = "commentId") Long updateCommentId,
+                                                @Valid @RequestBody UpdateCommentRequest updateCommentRequest) {
+        return commentService.updateComment(updateCommentId, updateCommentRequest);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable(name = "commentId") Long deleteCommentId) {
-        return ResponseEntity.ok(commentService.deleteComment(deleteCommentId));
+    public ResponseEntity<String> deleteComment(@PathVariable(name = "commentId") Long deleteCommentId) {
+        return commentService.deleteComment(deleteCommentId);
     }
 }

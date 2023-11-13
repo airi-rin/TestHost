@@ -10,7 +10,6 @@ import com.classroom.response.comment.CommentDetailResponse;
 import com.classroom.response.comment.CommentResponse;
 import com.classroom.respository.CommentRepository;
 import com.classroom.auth.AuthService;
-import com.example.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;

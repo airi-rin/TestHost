@@ -10,7 +10,6 @@ import com.classroom.response.post.PostDetailResponse;
 import com.classroom.response.post.PostResponse;
 import com.classroom.respository.PostRepository;
 import com.classroom.auth.AuthService;
-import com.example.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;

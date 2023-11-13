@@ -8,7 +8,6 @@ import com.classroom.request.classroom.CreateClassroomRequest;
 import com.classroom.response.classroom.ClassroomResponse;
 import com.classroom.respository.ClassroomRepository;
 import com.classroom.auth.AuthService;
-import com.example.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;

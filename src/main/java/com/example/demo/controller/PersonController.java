@@ -7,6 +7,7 @@ import com.example.demo.response.person.PersonResponse;
 import com.example.demo.service.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public class PersonController {
     private PersonService personService;
 
     @GetMapping
-    public ResponseEntity<List<PersonResponse>> getAllPerson() {
-        return personService.getAllPerson();
+    public ResponseEntity<Page<PersonResponse>> getAllPerson(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
+        return personService.getAllPerson(page, size);
     }
 
     @PostMapping
@@ -34,5 +36,12 @@ public class PersonController {
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         return personService.changePassword(changePasswordRequest);
+    }
+
+    @GetMapping("/classroom/{id}")
+    public ResponseEntity<Page<PersonResponse>> getPersonInClassroom(@PathVariable(name = "id") Long classroomId,
+                                                                     @RequestParam(name = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
+        return personService.getPersonInClassroom(classroomId, page, size);
     }
 }

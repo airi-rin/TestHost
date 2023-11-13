@@ -31,7 +31,7 @@ public class PostResponse {
         response.setCommentNumber(entity.getCommentEntities().size());
         response.setCreateAt(entity.getCreateAt());
         response.setUpdateAt(entity.getUpdateAt());
-        response.setPerson(PersonSimpleResponse.init(entity.getPerson()));
+        response.setPerson(PersonSimpleResponse.init(entity.getPersonClassroom().getPerson()));
         return response;
     }
 }

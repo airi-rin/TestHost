@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import com.example.demo.auth.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,34 +10,26 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "person")
+@Table(name = "classroom")
 @EntityListeners(AuditingEntityListener.class)
-public class PersonEntity {
+public class ClassroomEntity {
 
     @Id
+    @Column(name = "classroom_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "person_id")
-    private Long personId;
+    private Long classroomId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "classroom_title", nullable = false)
+    private String classroomTitle;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "resources")
+    private String resource;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
-    private EGender gender;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

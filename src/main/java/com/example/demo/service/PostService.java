@@ -3,8 +3,7 @@ package com.example.demo.service;
 import com.example.demo.auth.AuthService;
 import com.example.demo.config.Message;
 import com.example.demo.constant.MessageConstant;
-import com.example.demo.entity.ERole;
-import com.example.demo.entity.PostEntity;
+import com.example.demo.entity.*;
 import com.example.demo.auth.UserEntity;
 import com.example.demo.request.post.CreatePostRequest;
 import com.example.demo.request.post.UpdatePostRequest;
@@ -29,6 +28,12 @@ public class PostService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private ClassroomService classroomService;
+
+    @Autowired
+    private PersonClassroomService personClassroomService;
+
     public ResponseEntity<Page<PostResponse>> getAllPost (int page, int size){
         page --;
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("postId")));
@@ -38,8 +43,7 @@ public class PostService {
                         .map(PostResponse::init)
                         .collect(Collectors.toList()),
                 pageable, postEntityPage.getTotalElements());
-        ResponseEntity responseEntity = new ResponseEntity<>(postResponsePage, HttpStatus.OK);
-        return responseEntity;
+        return new ResponseEntity<>(postResponsePage, HttpStatus.OK);
     }
 
     @Transactional
@@ -48,7 +52,11 @@ public class PostService {
 
         postEntity.setPostTitle(postRequest.getPostTitle());
         postEntity.setPostContent(postRequest.getPostContent());
-        postEntity.setPerson(authService.getUser().getPerson());
+
+        PersonEntity person = authService.getPerson();
+        ClassroomEntity classroom = classroomService.getClassroom(postRequest.getClassroomId());
+        PersonClassroomEntity personClassroom = personClassroomService.getPersonClassroom(person, classroom);
+        postEntity.setPersonClassroom(personClassroom);
 
         postRepository.save(postEntity);
         return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_CREATE, "post"));
@@ -100,11 +108,8 @@ public class PostService {
 
     private boolean canChangePost(PostEntity postEntity) {
         UserEntity userUpdate = authService.getUser();
-        if (userUpdate.getId() != postEntity.getPerson().getUser().getId()
-                && userUpdate.getRole().getRoleName() != ERole.ADMIN) {
-            return false;
-        }
-        return true;
+        return userUpdate.getId() == postEntity.getPersonClassroom().getPerson().getUser().getId()
+                || userUpdate.getRole().getRoleName() == ERole.ADMIN;
     }
 
     private boolean canReadPost(PostEntity postEntity) {

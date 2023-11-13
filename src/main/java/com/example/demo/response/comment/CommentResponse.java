@@ -25,7 +25,7 @@ public class CommentResponse {
         CommentResponse response = new CommentResponse();
         response.setCommentId(entity.getCommentId());
         response.setContent(entity.getContent());
-        response.setPerson(PersonSimpleResponse.init(entity.getPerson()));
+        response.setPerson(PersonSimpleResponse.init(entity.getPersonClassroom().getPerson()));
         response.setCommentNumber(entity.getCommentEntities().size());
         response.setCreateAt(entity.getCreateAt());
         response.setUpdateAt(entity.getUpdateAt());

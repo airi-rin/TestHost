@@ -27,8 +27,11 @@ public class CommentEntity {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
-    private PersonEntity person;
+    @JoinColumns({
+            @JoinColumn(name = "person_id", referencedColumnName = "person_id"),
+            @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id")
+    })
+    private PersonClassroomEntity personClassroom;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)

@@ -1,5 +1,6 @@
 package com.example.demo.auth;
 
+import com.example.demo.entity.PersonEntity;
 import com.example.demo.request.person.LoginRequest;
 import com.example.demo.response.person.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class AuthService {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -37,6 +41,10 @@ public class AuthService {
     }
 
     public UserEntity getUser() {
-        return getPrincipal().getUser();
+        return userRepository.findById(getPrincipal().getUser().getId()).get();
+    }
+
+    public PersonEntity getPerson() {
+        return getUser().getPerson();
     }
 }

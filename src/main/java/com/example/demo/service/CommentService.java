@@ -4,36 +4,37 @@ import com.example.demo.auth.AuthService;
 import com.example.demo.auth.UserEntity;
 import com.example.demo.config.Message;
 import com.example.demo.constant.MessageConstant;
-import com.example.demo.entity.CommentEntity;
-import com.example.demo.entity.ERole;
-import com.example.demo.entity.PostEntity;
+import com.example.demo.entity.*;
 import com.example.demo.request.comment.CreateCommentRequest;
 import com.example.demo.request.comment.UpdateCommentRequest;
 import com.example.demo.response.comment.CommentDetailResponse;
 import com.example.demo.response.comment.CommentResponse;
 import com.example.demo.respository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    AuthService authService;
+    private AuthService authService;
 
     @Autowired
-    PostService postService;
+    private PostService postService;
+
+    @Autowired
+    private ClassroomService classroomService;
+
+    @Autowired
+    private PersonClassroomService personClassroomService;
 
     public ResponseEntity<Page<CommentResponse>> getAllComment(int page, int size) {
         page --;
@@ -51,9 +52,14 @@ public class CommentService {
     public ResponseEntity<String> createComment(CreateCommentRequest commentRequest) {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setContent(commentRequest.getContent());
-        commentEntity.setPerson(authService.getUser().getPerson());
+
+        PersonEntity person = authService.getPerson();
+        ClassroomEntity classroom;
+
         if (commentRequest.getParentIsPost()) {
-            commentEntity.setPost(postService.getPostEntity(commentRequest.getParentId()));
+            PostEntity post = postService.getPostEntity(commentRequest.getParentId());
+            commentEntity.setPost(post);
+            classroom = post.getPersonClassroom().getClassroom();
         } else {
             Optional<CommentEntity> parentEntityOptional = commentRepository.findById(commentRequest.getParentId());
             if (!parentEntityOptional.isPresent()) {
@@ -63,7 +69,10 @@ public class CommentService {
             commentEntity.setParentComment(parentEntity);
 
             commentEntity.setPost(parentEntity.getPost());
+            classroom = parentEntity.getPersonClassroom().getClassroom();
         }
+
+        commentEntity.setPersonClassroom(personClassroomService.getPersonClassroom(person, classroom));
 
         commentRepository.save(commentEntity);
         return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_CREATE, "comment"));
@@ -78,6 +87,7 @@ public class CommentService {
         return ResponseEntity.ok(commentDetailResponse);
     }
 
+    @Transactional
     public ResponseEntity<String> updateComment(Long commentId, UpdateCommentRequest commentRequest) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if (!canChangeComment(commentEntity)) {
@@ -89,6 +99,7 @@ public class CommentService {
         return ResponseEntity.ok(Message.getMessage(MessageConstant.SUCCESS_UPDATE, "comment"));
     }
 
+    @Transactional
     public ResponseEntity<String> deleteComment(Long commentId) {
         CommentEntity commentEntity = getCommentEntity(commentId);
         if(!canChangeComment(commentEntity)) {
@@ -113,12 +124,9 @@ public class CommentService {
 
     private boolean canChangeComment(CommentEntity commentEntity) {
         UserEntity userUpdate = authService.getUser();
-        if (userUpdate.getId() != commentEntity.getPerson().getUser().getId() &&
-                userUpdate.getId() != commentEntity.getPost().getPerson().getUser().getId() &&
-                userUpdate.getRole().getRoleName() != ERole.ADMIN) {
-            return false;
-        }
-        return true;
+        return userUpdate.getId() == commentEntity.getPersonClassroom().getPerson().getUser().getId() ||
+                userUpdate.getId() == commentEntity.getPost().getPersonClassroom().getPerson().getUser().getId() ||
+                userUpdate.getRole().getRoleName() != ERole.ADMIN;
     }
 
 }
